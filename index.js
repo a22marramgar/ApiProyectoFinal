@@ -3,13 +3,24 @@ const http = require('http');
 const sessionMiddleware = require('./sessionMiddleware.js');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const cors = require("cors");
 require('dotenv').config();
+
+const corsOptions = {
+  origin: ["http://localhost:3000", "https://math-thai.dam.inspedralbes.cat"],
+  credentials: true,
+  methods: ['GET', 'POST', 'DELETE'],
+  exposedHeaders: ['set-cookie', 'ajax-redirect'],
+  preflightContinue: true,
+  optionsSuccessStatus: 200,
+};
 
 const app = express();
 app.use(sessionMiddleware);
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cors(corsOptions));
 
 const port = process.env.PORT || 3666;
 
@@ -19,5 +30,19 @@ server.listen(port, () => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  var response = {};
+  response.msg = 'Hello World!';
+  res.json(response);
+});
+
+app.post('/login', (req, res) => {
+  var response = {};
+  if (req.body.username === 'Juan' && req.body.password === '1234') {
+    req.session.user = req.body.username;
+    response.msg = 'Login Success';
+    res.json(response);
+  } else {
+    response.msg = 'Login Failed';
+    res.json(response);
+  }
 });
