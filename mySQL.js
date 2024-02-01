@@ -24,6 +24,7 @@ function getUsers(callback) {
         })
     })
 }
+
 function getUserById(id, callback){
     pool.getConnection((error, connection) => {
         if (error) {
@@ -37,7 +38,23 @@ function getUserById(id, callback){
         })
     })
 }
-function InsertUser(values, callback) {
+
+function getUsernames(callback) {
+    pool.getConnection((error, connection) => {
+        if (error) {
+            throw error
+        }
+        connection.query("SELECT username FROM user", (errorQuery, results) => {
+            connection.release()
+            if (errorQuery) {
+                throw errorQuery
+            }
+            callback(results)
+        })
+    })
+}
+
+function insertUser(values, callback) {
     pool.getConnection((error, connection) => {
         if (error) {
             throw error
@@ -50,12 +67,12 @@ function InsertUser(values, callback) {
         })
     })
 }
-function UpdateUser(valores, callback) {
+function updateUser(values, callback) {
     pool.getConnection((error, connection) => {
         if (error) {
             throw error
         }
-        connection.query("UPDATE users SET name = ?, surname = ?, email = ? WHERE id = ?",values, (errorQuery, result) => {
+        connection.query("UPDATE user SET username = ?, password = ? WHERE id = ?",values, (errorQuery, result) => {
             if (errorQuery) {
                 throw errorQuery
             }
@@ -67,5 +84,7 @@ module.exports =
 {
     getUsers,
     getUserById,
-    InsertUser
+    insertUser,
+    updateUser,
+    getUsernames
 }
