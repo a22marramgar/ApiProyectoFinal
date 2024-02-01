@@ -15,7 +15,7 @@ function getUsers(callback) {
         if (error) {
             throw error
         }
-        connection.query("SELECT * FROM users", (errorQuery, results) => {
+        connection.query("SELECT * FROM user", (errorQuery, results) => {
             connection.release()
             if (errorQuery) {
                 throw errorQuery
@@ -29,7 +29,7 @@ function getUserById(id, callback){
         if (error) {
             throw error
         }
-        connection.query("SELECT * FROM users WHERE id =?",id, (errorQuery, result) => {
+        connection.query("SELECT * FROM user WHERE id =?",id, (errorQuery, result) => {
             if (errorQuery) {
                 throw errorQuery
             }
@@ -42,7 +42,7 @@ function InsertUser(values, callback) {
         if (error) {
             throw error
         }
-        connection.query("INSERT INTO users(username, password) VALUES(?, ?)",values, (errorQuery, result) => {
+        connection.query("INSERT INTO user(username, password) VALUES(?, ?)",values, (errorQuery, result) => {
             if (errorQuery) {
                 throw errorQuery
             }
