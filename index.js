@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const sessionMiddleware = require('./sessionMiddleware.js');
+const mysqlConnection = require('./mySQL.js');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require("cors");
@@ -35,6 +36,13 @@ app.get('/', (req, res) => {
   res.json(response);
 });
 
+
+
+//
+//
+//USER ENDPOINTS
+//
+//
 app.post('/login', (req, res) => {
   var response = {};
   if (req.body.username === 'Juan' && req.body.password === '1234') {
@@ -46,3 +54,21 @@ app.post('/login', (req, res) => {
     res.json(response);
   }
 });
+app.post('/registerUser', (req,res) => {
+  userData = req.body;
+  let check = true;
+
+  mysqlConnection.getUsernames((usernames) => {
+    usernames.forEach(username => {
+      if (username.username == userData.username) {
+        check = false;
+      }
+    })
+    if (check) {
+      mysqlConnection.insertUser([userData.username,userData.password],((result) => {res.send(result)}))
+    }
+    else {
+      res.status(409).send("Mail already in use");
+    }
+  })
+})
